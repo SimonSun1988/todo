@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block issue %}
+
+    <style type="text/css">
+        .fixed_top {
+            position: fixed;
+            top: 3%;
+            left: 3%; 
+        }
+    </style>
+
+    <div class="mui-container-fluid">
+
+        <div class="mui-row">
+            <h1 class="mui-col-md-12 mui--text-center">Issue Information</h1>
+        </div>
+
+        <div class="mui-row">
+            <form class="mui-col-md-offset-3 mui-col-md-6">
+                <div class="mui-textfield mui-textfield--float-label">
+                  <input type="text" value="{{ issue.status }}" disabled>
+                  <label>狀態</label>
+                </div>
+                <div class="mui-textfield mui-textfield--float-label">
+                  <input type="text" value="{{ issue.name }}" disabled>
+                  <label>NAME</label>
+                </div>
+                <div class="mui-textfield mui-textfield--float-label">
+                    <input type="text" value="{{ issue.deadlineFormat }}" disabled>
+                    <label>過期時間</label>
+                </div>
+                <div class="mui-textfield mui-textfield--float-label">
+                    <input type="text" value="{{ issue.createdAtFormat }}" disabled>
+                    <label>創造時間</label>
+                </div>
+                <div class="mui-textfield">
+                    <textarea disabled>{{ issue.memo }}</textarea>
+                </div>
+            </form>
+
+            {% if issue.status == "OPEN" %}
+                <div class="button_group mui-col-md-offset-3 mui-col-md-6">
+                    <button class="issue_done mui-btn mui-btn--raised mui-btn--primary">已完成</button>
+                    <button class="issue_delete mui-btn mui-btn--raised mui-btn--danger">刪除</button>
+                    <button class="issue_pending mui-btn mui-btn--raised">暫緩執行</button>
+                </div>
+            {% else %}
+                <div class="button_group mui-col-md-offset-3 mui-col-md-6">
+                    <button class="issue_open mui-btn mui-btn--raised mui-btn--primary">重新打開</button>
+                </div>
+            {% endif %}
+        </div>
+
+        <a href="/" class="back_to_index mui-btn mui-btn--primary mui-btn--fab fixed_top"><<</a>
+    </div>
+
+    <script type="text/javascript">
+        $('.issue_open').click(function(e) {
+            $.post('/updateStatus', {
+                id: "{{ issue._id }}",
+                status: 'OPEN'
+            }, function() {
+                console.log('open');
+                window.location.href = "/issues/{{ issue._id }}";
+            }, 'json');
+        });
+        $('.issue_done').click(function(e) {
+            $.post('/updateStatus', {
+                id: "{{ issue._id }}",
+                status: 'DONE'
+            }, function() {
+                console.log('done');
+                window.location.href = "/";
+            }, 'json');
+        });
+        $('.issue_delete').click(function(e) {
+            $.post('/updateStatus', {
+                id: "{{ issue._id }}",
+                status: 'DELETE'
+            }, function() {
+                console.log('delete');
+                window.location.href = "/";
+            }, 'json');
+        });
+        $('.issue_pending').click(function(e) {
+            $.post('/updateStatus', {
+                id: "{{ issue._id }}",
+                status: 'PENDING'
+            }, function() {
+                console.log('pending');
+                window.location.href = "/";
+            }, 'json');
+        });
+    </script>
+{% endblock %}

@@ -1,9 +1,55 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-    <h1>Koa.js</h1>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block homepage %}
+
+    <style type="text/css">
+        .fixedbutton {
+            position: fixed;
+            bottom: 3%;
+            right: 3%; 
+        }
+
+        .DONE {
+            background-color: hsla(210, 100%, 50%, 0.3);
+        }
+
+        .PENDING {
+            background-color: hsla(0, 100%, 50%, 0.3);
+        }
+    </style>
+    <div class="mui-container-fluid">
+        <div class="mui-row">
+            <h1 class="mui-col-md-12 mui--text-center">NOWnews TODO List</h1>
+            <h4 class="mui-col-md-12 mui--text-center">Made By Koa.js</h4>
+        </div>
+
+        <div class="mui-row">
+            <div class="mui-col-md-10 mui-col-md-offset-1">
+                <div class="mui-panel">
+                    <div class="mui-row">
+                        <div class="mui-col-md-9">NAME</div>
+                        <div class="mui-col-md-1">狀態</div>
+                        <div class="mui-col-md-2">到期時間</div>
+                    </div>
+                </div>
+                {% asyncAll issue in issues %}
+                    <div id="{{issue._id}}" class="mui-panel panel {{ issue.status }}">
+                        <div class="mui-row">
+                            <div class="mui-col-md-9">{{ issue.name }}</div>
+                            <div class="mui-col-md-1">{{ issue.status }}</div>
+                            <div class="mui-col-md-2">{{ issue.deadlineFormat }}</div>
+                        </div>
+                    </div>
+                {% endall %}
+            </div>
+        </div>
+        <a href="/create" class="addTodo mui-btn mui-btn--fab mui-btn--accent fixedbutton">+</a>
+    </div>
+
+    <script type="text/javascript">
+        $('.panel').click(function(e) {
+            var issueId = $(this).attr('id');
+            window.location.href = "/issues/" + issueId;
+        });
+    </script>
+{% endblock %}
